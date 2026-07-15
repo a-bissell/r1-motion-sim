@@ -1,0 +1,67 @@
+# R1 motion-tracking policy config — dance1_subject2_segment2 (24-DOF Edu).
+#
+# This is the DEFAULT example. Every value here comes from the resolved
+# `*_generated.yaml` the ai_sport controller writes at startup (plus the fixed
+# R1 joint-name order and the anchor body). To replay a different motion or
+# robot variant, copy this file and swap the values from your own generated
+# config. See docs/pipeline_spec.md.
+name: jiequandao
+robot: r1_edu
+family: motion_tracking      # obs builder family (see r1_motion_sim.py BUILDERS)
+
+control:
+  fps: 60                    # reference motion clip frame rate
+  step_dt: 0.02              # control period (policy runs at 1/step_dt = 50 Hz)
+  sim_dt: 0.002              # physics timestep; PD runs here (motor-side model)
+  time_start: 3.39
+  time_end: 26.40
+
+model:
+  anchor_body: torso_link
+  # 24 controlled joints in model / trajectory-CSV (DFS / URDF document) order:
+  joint_names:
+    [left_hip_pitch_joint, left_hip_roll_joint, left_hip_yaw_joint,
+     left_knee_joint, left_ankle_pitch_joint, left_ankle_roll_joint,
+     right_hip_pitch_joint, right_hip_roll_joint, right_hip_yaw_joint,
+     right_knee_joint, right_ankle_pitch_joint, right_ankle_roll_joint,
+     waist_roll_joint, waist_yaw_joint,
+     left_shoulder_pitch_joint, left_shoulder_roll_joint,
+     left_shoulder_yaw_joint, left_elbow_joint, left_wrist_roll_joint,
+     right_shoulder_pitch_joint, right_shoulder_roll_joint,
+     right_shoulder_yaw_joint, right_elbow_joint, right_wrist_roll_joint]
+  # DFS (model/CSV) -> BFS (policy) reorder: policy = dfs[joint_ids_map]
+  joint_ids_map: [0, 6, 12, 1, 7, 13, 2, 8, 14, 19, 3, 9, 15, 20,
+                  4, 10, 16, 21, 5, 11, 17, 22, 18, 23]
+
+policy:
+  num_obs: 129
+  num_act: 24
+  # Observation layout: term order + dims. The sum must equal num_obs. Each
+  # `name` must map to a builder in r1_motion_sim.BUILDERS.
+  obs_terms:
+    - {name: motion_command_pos,  dim: 24}   # reference joint positions (BFS)
+    - {name: motion_command_vel,  dim: 24}   # reference joint velocities (BFS)
+    - {name: motion_anchor_ori_b, dim: 6}    # anchor ori, 6D row-interleaved
+    - {name: base_ang_vel,        dim: 3}    # base angular velocity, body frame
+    - {name: joint_pos_rel,       dim: 24}   # joint pos - default (BFS)
+    - {name: joint_vel_rel,       dim: 24}   # joint velocities (BFS)
+    - {name: last_action,         dim: 24}   # previous raw policy output
+
+gains:                        # default/scale/offset in BFS; stiffness/damping in DFS
+  default_joint_pos:
+    [-0.312, -0.312, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.2, 0.669, 0.669,
+     0.2, -0.2, -0.363, -0.363, 0.0, -0.0, 0.0, 0.0, 0.6, 0.6, -0.0, 0.0]
+  action_scale:
+    [0.178, 0.178, 0.178, 0.178, 0.178, 0.178, 0.178, 0.178, 0.178, 0.178,
+     0.178, 0.178, 0.178, 0.178, 0.398, 0.398, 0.525, 0.525, 0.398, 0.398,
+     0.525, 0.525, 0.525, 0.525]
+  action_offset:
+    [-0.302, -0.319, 0.00124, 0.000442, 0.00489, 0.00191, 0.00929, 0.00796,
+     0.205, 0.203, 0.67, 0.669, 0.202, -0.205, -0.355, -0.369, 0.00447, -0.00644,
+     0.00976, 0.00258, 0.6, 0.605, -0.00448, 0.00818]
+  stiffness:
+    [84.3, 84.3, 84.3, 84.3, 31.4, 31.4, 84.3, 84.3, 84.3, 84.3, 31.4, 31.4,
+     84.3, 84.3, 84.3, 84.3, 15.7, 15.7, 15.7, 84.3, 84.3, 15.7, 15.7, 15.7]
+  damping:
+    [5.37, 5.37, 5.37, 5.37, 2.0, 2.0, 5.37, 5.37, 5.37, 5.37, 2.0, 2.0,
+     5.37, 5.37, 5.37, 5.37, 1.0, 1.0, 1.0, 5.37, 5.37, 1.0, 1.0, 1.0]

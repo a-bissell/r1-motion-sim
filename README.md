@@ -14,6 +14,12 @@ and motion clips from your own robot (see [docs/extract_from_robot.md](docs/extr
 *Reference result — the stock `dance1_subject2` policy balancing and tracking
 the full 12.9 s motion in physics (joint-tracking correlation ~0.95 median).*
 
+![jiequandao](docs/jiequandao.gif)
+
+*Same tool, a different config — the `jiequandao` (截拳道 / Jeet Kune Do) policy
+landing a side kick and holding balance for 23 s, driven purely by
+`configs/jiequandao.yaml`. No code changed between this and the dance above.*
+
 ## Quickstart
 
 ```bash
@@ -68,7 +74,7 @@ extractor, and a sim-to-sim eval to vet a policy before hardware. See
 
 ```
 r1_motion_sim.py          config-driven replay/eval (the tool)
-configs/                  per-policy YAML (dance1_subject2 = default example)
+configs/                  per-policy YAML (dance1_subject2, gongfu, jiequandao)
 docs/
   pipeline_spec.md        exact obs/action spec + joint maps + gotchas
   extract_from_robot.md   pull policy/motion/config off your own R1

@@ -2,8 +2,8 @@
 
 Config-driven closed-loop MuJoCo replay for **Unitree R1** motion-tracking
 policies. Point it at a policy `.onnx`, a reference motion `.csv`, and a small
-YAML config, and it rolls the policy out in full physics — balancing and
-tracking the motion — against Unitree's official R1 model.
+YAML config, and it rolls the policy out in full physics (balancing and
+tracking the motion) against Unitree's official R1 model.
 
 Built by reverse-engineering the on-robot `ai_sport` controller. **No
 proprietary files are distributed here** — you supply your own policy weights
@@ -43,7 +43,7 @@ Everything policy-/robot-specific lives in the [config](configs/dance1_subject2.
 observation layout. Those values are exactly what the `ai_sport` controller
 writes into its resolved `*_generated.yaml` at startup, so replaying a different
 dance (or the stand-up / sit-down motions, or an Air/Pro variant) is just a new
-config file, no code changes.
+config file.
 
 The observation is assembled from named term-builders (`policy.obs_terms` in the
 config → `BUILDERS` in `r1_motion_sim.py`). The bundled builders cover the

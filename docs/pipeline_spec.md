@@ -22,7 +22,7 @@ doc is the R1-specific instantiation of its MDP.
 `motion_command = torch.cat([joint_pos, joint_vel])` (BeyondMimic
 `MotionCommand.command`). All obs scales are 1.0, all clips null — feed raw.
 
-## motion_anchor_ori_b — the gotcha that cost us days
+## motion_anchor_ori_b (aka the primary footgun)
 
 ```
 ori = R_robot_anchor^T @ R_ref_anchor          # ref anchor in robot's anchor frame

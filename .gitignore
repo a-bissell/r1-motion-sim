@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+r1_model/
+*.onnx
+*.csv
+*.gif
+.DS_Store
+# ^ policy weights, motion clips, model, and renders are user-supplied /
+#   generated — not distributed. Delete a line if you intend to track it.
+!docs/*.gif
